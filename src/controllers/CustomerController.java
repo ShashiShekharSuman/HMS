@@ -4,6 +4,8 @@ package controllers;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
@@ -89,7 +91,13 @@ public class CustomerController {
     
     public void customerCheckOut(String customerId, String roomNo, String checkOut) {
         try {
-            sql.execute("UPDATE bookings SET check_out = '" + checkOut + "', stay_period = DATEDIFF(day, check_in, check_out), total_amount = price * stay_period WHERE customer_id = " + customerId + " and check_out IS NULL");
+            ResultSet rs = sql.select("bookings", "customer_id = " + customerId + " and check_out IS NULL");
+            String checkIn = rs.getString("check_in");
+            LocalDate checkINDate = LocalDate.parse(checkIn);
+            LocalDate checkOUTDate = LocalDate.parse(checkOut);
+            Duration diff = Duration.between(checkINDate, checkOUTDate);
+            long stayPeriod = diff.toDays();
+            sql.execute("UPDATE bookings SET check_out = '" + checkOut + "', stay_period = 0"+ stayPeriod +", total_amount = price * stay_period WHERE customer_id = " + customerId + " and check_out IS NULL");
             sql.update("rooms", Map.ofEntries(Map.entry("status", "Available")), "room_no = " + roomNo);
             JOptionPane.showMessageDialog(null, "Check Out Successful");
         }

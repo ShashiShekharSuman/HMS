@@ -201,7 +201,7 @@ public class CheckIn extends JFrame {
                         }
                         else {
 
-                            customerController.customerCheckIn(mobile, roomNo, new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()), Double.valueOf(priceTextField.getText()));
+                            customerController.customerCheckIn(Long.valueOf(mobileTextField.getText()), Integer.valueOf(roomTextField.getText()), new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()), Double.valueOf(priceTextField.getText()));
                         }
                     }
 		});

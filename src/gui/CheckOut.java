@@ -25,7 +25,7 @@ public class CheckOut extends JFrame{
 	private JPanel contentPane;
 	private JTextField t1;
         private CustomerController customerController;
-        Choice c1;
+        private JTextField mobileTextField;
 
 	/**
 	 * Launch the application.
@@ -58,6 +58,12 @@ public class CheckOut extends JFrame{
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+                customerController = new CustomerController();
+                
+                t1 = new JTextField();
+                t1.setBounds(130, 132, 150, 20);
+                t1.setEnabled(false);
+		contentPane.add(t1);
                 
                 ImageIcon i1  = new ImageIcon(ClassLoader.getSystemResource("images/sixth.jpg"));
                 Image i3 = i1.getImage().getScaledInstance(400, 225,Image.SCALE_DEFAULT);
@@ -75,16 +81,9 @@ public class CheckOut extends JFrame{
 		lblName.setBounds(20, 85, 80, 14);
 		contentPane.add(lblName);
                 
-                c1 = new Choice();
-                this.customerController = new CustomerController();
-                ResultSet rs = customerController.getCheckedInCustomerIds();
-                try {
-                    while(rs != null && rs.next()){
-                        c1.add(rs.getString("mobile"));    
-                    }
-                } catch (SQLException e) {}
-                c1.setBounds(130, 82, 150, 20);
-		contentPane.add(c1);
+                mobileTextField = new JTextField();
+                mobileTextField.setBounds(130, 82, 150, 20);
+		contentPane.add(mobileTextField);
                 
                 ImageIcon i4 = new ImageIcon(ClassLoader.getSystemResource("images/tick.png"));
                 Image i5 = i4.getImage().getScaledInstance(20, 20,Image.SCALE_DEFAULT);
@@ -95,10 +94,13 @@ public class CheckOut extends JFrame{
                 
                 l2.addActionListener(new ActionListener(){
                     
+                    @Override
                     public void actionPerformed(ActionEvent ae){
-                        String customer_id = c1.getSelectedItem();
+                        String customer_id = mobileTextField.getText();
                         String room_no = customerController.getAllocatedRoom(customer_id);
                         t1.setText(room_no);    
+                        t1.setEditable(false);
+                        t1.setEnabled(true);
                     }
                 });
 
@@ -107,20 +109,11 @@ public class CheckOut extends JFrame{
 		lblRoomNumber.setBounds(20, 132, 86, 20);
 		contentPane.add(lblRoomNumber);
 		
-		t1 = new JTextField();
-                t1.setBounds(130, 132, 150, 20);
-		contentPane.add(t1);
-                
-                
-                
-                
-                
-		
                 
 		JButton btnCheckOut = new JButton("Check Out");
 		btnCheckOut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-                                String customerId = c1.getSelectedItem();
+                                String customerId = mobileTextField.getText();
                                 String roomNo = t1.getText();
                                 customerController.customerCheckOut(customerId, roomNo, new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime()));
                         }
